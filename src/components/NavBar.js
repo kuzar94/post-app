@@ -59,16 +59,15 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: {
     background:
-      "linear-gradient(138deg, rgba(158,53,151,1) 0%, rgba(66,2,66,1) 100%)",
+      "linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)",
     border: 0,
     color: "white",
     height: 48,
     padding: "0 30px"
   },
   button: {
-    height: 36,
-    padding: theme.spacing(1, 1, 1, 1),
-    minWidth: "80px",
+    height: 35,
+    minWidth: "100px",
     marginRight: "5px"
   }
 }));

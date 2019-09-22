@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CommentList from "./CommentList";
-import CommenTextField from "./CommentTextField";
+import CommentForm from "./CommentForm";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
@@ -17,7 +17,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
-
+import { Provider } from "react-redux";
+import store from "../store";
 const useStyles = makeStyles(theme => ({
   card: {
     marginTop: 40,
@@ -64,8 +65,8 @@ function getFirstLetter(stringData) {
   return stringData.charAt(0);
 }
 
+const numberOfComments = 3;
 export default function RecipeReviewCard(props) {
-  const numberOfComments = 6;
   const [data, setData] = useState({ hits: [] });
   useEffect(() => {
     const fetchData = async () => {
@@ -89,53 +90,55 @@ export default function RecipeReviewCard(props) {
     }
   }
   return (
-    <Card className={classes.card}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            {getFirstLetter(props.postData.name)}
-          </Avatar>
-        }
-        action={
-          <Fab aria-label="delete" className={classes.fab}>
-            <DeleteIcon />
-          </Fab>
-        }
-        title={props.postData.name}
-        subheader={props.postData.email}
-      />
-      <CardMedia
-        className={classes.media}
-        image="https://via.placeholder.com/500"
-        title="Some Photo"
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {props.postData.body}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded
-          })}
-          onClick={handleExpandClick}
-        >
-          <ExpandMoreIcon />
-        </IconButton>
-        <Typography className={classes.toggleComments}>
-          {expandCommentsText}
-        </Typography>
-        <IconButton className={classes.favouriteIcon}>
-          <FavoriteIcon />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded}>
+    <Provider store={store}>
+      <Card className={classes.card}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="recipe" className={classes.avatar}>
+              {getFirstLetter(props.postData.name)}
+            </Avatar>
+          }
+          action={
+            <Fab aria-label="delete" className={classes.fab}>
+              <DeleteIcon />
+            </Fab>
+          }
+          title={props.postData.name}
+          subheader={props.postData.email}
+        />
+        <CardMedia
+          className={classes.media}
+          image="https://via.placeholder.com/1240"
+          title="Some Photo"
+        />
         <CardContent>
-          <CommentList commentData={data} />
-          <CommenTextField />
+          <Typography variant="body2" color="textSecondary" component="p">
+            {props.postData.body}
+          </Typography>
         </CardContent>
-      </Collapse>
-    </Card>
+        <CardActions>
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded
+            })}
+            onClick={handleExpandClick}
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+          <Typography className={classes.toggleComments}>
+            {expandCommentsText}
+          </Typography>
+          <IconButton className={classes.favouriteIcon}>
+            <FavoriteIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded}>
+          <CardContent>
+            <CommentList commentData={data} />
+            <CommentForm />
+          </CardContent>
+        </Collapse>
+      </Card>
+    </Provider>
   );
 }

@@ -1,44 +1,54 @@
 import Card from "./Card";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { Component } from "react";
 import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginBottom: "40px"
+const numberOfPosts = 3;
+export default class Table extends Component {
+  componentDidMount() {
+    fetch(
+      `https://jsonplaceholder.typicode.com/comments?_start=0&_limit=${numberOfPosts}`
+    )
+      .then(res => res.json())
+      .then(data => this.setState({ posts: data }));
   }
-}));
-
-export default function Table() {
-  const classes = useStyles();
-  const numberOfPosts = 2;
-  const [data, setData] = useState({ hits: [] });
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(
-        // Comment data work as posts
-        `https://jsonplaceholder.typicode.com/comments?_start=0&_limit=${numberOfPosts}`
+  componentStyle = {
+    root: {
+      marginBottom: "40px"
+    },
+    progress: {
+      color: "rgba(158,53,151,1)",
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: "50px"
+    }
+  };
+  state = {
+    posts: []
+  };
+  render() {
+    const postCards = Object.keys(this.state.posts).map(postNumber => {
+      return (
+        <li key={postNumber}>
+          <Card postData={this.state.posts[postNumber]} />
+        </li>
       );
-      setData(result.data);
-    };
-    fetchData();
-  }, []);
-  return (
-    <Box className={classes.root}>
-      <ul>
-        {Object.keys(data).map(postNumber => {
-          if (postNumber === "hits") {
-            return <li key={5}>LOADING</li>;
-          } else {
-            return (
-              <li key={postNumber}>
-                <Card postData={data[postNumber]} />
-              </li>
-            );
-          }
-        })}
-      </ul>
-    </Box>
-  );
+    });
+    if (this.state.posts.length === 0) {
+      return (
+        <CircularProgress
+          size={60}
+          style={this.componentStyle.progress}
+          key={"loading1"}
+        />
+      );
+    } else {
+      return (
+        <Box style={this.componentStyle.root}>
+          <ul>{postCards}</ul>
+        </Box>
+      );
+    }
+  }
 }
