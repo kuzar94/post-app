@@ -1,37 +1,36 @@
-import Card from "./Card";
+import CardComponent from "./CardComponent";
 import React, { Component } from "react";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
-const numberOfPosts = 3;
-export default class Table extends Component {
+import { withStyles } from "@material-ui/core/styles";
+const useStyles = theme => ({
+  root: {
+    marginBottom: "40px"
+  },
+  progress: {
+    color: "rgba(158,53,151,1)",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "50px"
+  }
+});
+class Table extends React.Component {
   componentDidMount() {
-    fetch(
-      `https://jsonplaceholder.typicode.com/comments?_start=0&_limit=${numberOfPosts}`
-    )
+    fetch(`https://jsonplaceholder.typicode.com/comments?_start=0&_limit=5`)
       .then(res => res.json())
       .then(data => this.setState({ posts: data }));
   }
-  componentStyle = {
-    root: {
-      marginBottom: "40px"
-    },
-    progress: {
-      color: "rgba(158,53,151,1)",
-      display: "block",
-      marginLeft: "auto",
-      marginRight: "auto",
-      marginTop: "50px"
-    }
-  };
   state = {
-    posts: []
+    posts: [],
+    numberOfPosts: 3
   };
   render() {
+    const { classes } = this.props;
     const postCards = Object.keys(this.state.posts).map(postNumber => {
       return (
         <li key={postNumber}>
-          <Card postData={this.state.posts[postNumber]} />
+          <CardComponent postData={this.state.posts[postNumber]} />
         </li>
       );
     });
@@ -39,16 +38,17 @@ export default class Table extends Component {
       return (
         <CircularProgress
           size={60}
-          style={this.componentStyle.progress}
+          className={classes.progress}
           key={"loading1"}
         />
       );
     } else {
       return (
-        <Box style={this.componentStyle.root}>
+        <Box className={classes.root}>
           <ul>{postCards}</ul>
         </Box>
       );
     }
   }
 }
+export default withStyles(useStyles)(Table);

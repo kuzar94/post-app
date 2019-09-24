@@ -47,7 +47,7 @@ export default class CommentForm extends Component {
       body: JSON.stringify(comment)
     })
       .then(res => res.json())
-      .then(data => console.log(comment));
+      .then(data => console.log(data));
   };
   render() {
     return (

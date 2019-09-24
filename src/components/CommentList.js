@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { fetchPosts } from "../actions/postActions";
+
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -8,39 +11,43 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import DeleteIcon from "@material-ui/icons/Delete";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { withStyles } from "@material-ui/core/styles";
 
-export default class CommentList extends Component {
-  componentStyles = {
-    root: {
-      width: "100%",
-      maxWidth: 500,
-      marginTop: "-22px"
-    },
-    inline: {
-      display: "inline"
-    },
-    avatarComment: {
-      height: "30px",
-      width: "30px",
-      backgroundColor: "red",
-      fontSize: "15px"
-    },
-    fab: {
-      maxHeight: "30px",
-      maxWidth: "30px",
-      minHeight: "30px",
-      minWidth: "30px",
-      marginLeft: "auto"
-    },
-    progress: {
-      color: "purple",
-      display: "block",
-      marginLeft: "auto",
-      marginRight: "auto",
-      marginTop: "50px"
-    }
-  };
+const useStyles = theme => ({
+  root: {
+    width: "100%",
+    maxWidth: 500,
+    marginTop: "-22px"
+  },
+  inline: {
+    display: "inline"
+  },
+  avatarComment: {
+    height: "30px",
+    width: "30px",
+    backgroundColor: "red",
+    fontSize: "15px"
+  },
+  fab: {
+    maxHeight: "30px",
+    maxWidth: "30px",
+    minHeight: "30px",
+    minWidth: "30px",
+    marginLeft: "auto"
+  },
+  progress: {
+    color: "purple",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "50px"
+  }
+});
+
+class CommentList extends React.Component {
+  componentWillMount() {
+    this.props.fetchPosts();
+  }
   getFirstLetter(stringData) {
     return stringData.charAt(0);
   }
@@ -69,61 +76,53 @@ export default class CommentList extends Component {
     };
   }
   render() {
-    if (this.props.commentData.hits) {
+    const { classes } = this.props;
+    const commentsItems = Object.keys(this.props.posts).map(commentNumber => {
       return (
-        <CircularProgress
-          size={60}
-          style={this.componentStyles.progress}
-          key={"loading2"}
-        />
+        <div key={commentNumber}>
+          <ListItem alignItems="center">
+            <ListItemAvatar>
+              <Avatar
+                aria-label="recipe"
+                style={this.getAvatarStyle(
+                  this.getFirstWord(this.props.posts[commentNumber].name)
+                )}
+              >
+                {this.getFirstLetter(this.props.posts[commentNumber].name)}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={this.props.posts[commentNumber].name}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    className={classes.inline}
+                    color="textPrimary"
+                  >
+                    {this.props.posts[commentNumber].email}
+                  </Typography>
+                  - {this.props.posts[commentNumber].body}
+                </React.Fragment>
+              }
+            />
+            <Fab aria-label="delete" className={classes.fab}>
+              <DeleteIcon />
+            </Fab>
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </div>
       );
-    } else {
-      return (
-        <List style={this.componentStyles.root}>
-          {Object.keys(this.props.commentData).map(commentNumber => {
-            return (
-              <div key={commentNumber}>
-                <ListItem alignItems="center">
-                  <ListItemAvatar>
-                    <Avatar
-                      aria-label="recipe"
-                      style={this.getAvatarStyle(
-                        this.getFirstWord(
-                          this.props.commentData[commentNumber].name
-                        )
-                      )}
-                    >
-                      {this.getFirstLetter(
-                        this.props.commentData[commentNumber].name
-                      )}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={this.props.commentData[commentNumber].name}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          style={this.componentStyles.inline}
-                          color="textPrimary"
-                        >
-                          {this.props.commentData[commentNumber].email}
-                        </Typography>
-                        - {this.props.commentData[commentNumber].body}
-                      </React.Fragment>
-                    }
-                  />
-                  <Fab aria-label="delete" style={this.componentStyles.fab}>
-                    <DeleteIcon />
-                  </Fab>
-                </ListItem>
-                <Divider variant="inset" component="li" />
-              </div>
-            );
-          })}
-        </List>
-      );
-    }
+    });
+
+    return <List className={classes.root}>{commentsItems}</List>;
   }
 }
+const mapStateToProps = state => ({
+  posts: state.posts.items
+});
+export default connect(
+  mapStateToProps,
+  { fetchPosts }
+)(withStyles(useStyles)(CommentList));
