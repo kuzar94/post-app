@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
-import { Provider } from "react-redux";
-import store from "../store";
+import { connect } from "react-redux";
+import { fetchComments } from "../actions/commentActions";
+import PropTypes from "prop-types";
+
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -61,6 +63,15 @@ const useStyles = theme => ({
   }
 });
 class CardComponent extends React.Component {
+  componentWillMount() {
+    this.props.fetchComments();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.newComment) {
+      this.props.comments.unshift(nextProps.newComment);
+    }
+  }
+
   getFirstLetter(stringData) {
     return stringData.charAt(0);
   }
@@ -79,58 +90,65 @@ class CardComponent extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Provider store={store}>
-        <Card className={classes.card}>
-          <CardHeader
-            avatar={
-              <Avatar aria-label="recipe" className={classes.avatar}>
-                {this.getFirstLetter(this.props.postData.name)}
-              </Avatar>
-            }
-            action={
-              <Fab aria-label="delete" className={classes.fab}>
-                <DeleteIcon />
-              </Fab>
-            }
-            title={this.props.postData.name}
-            subheader={this.props.postData.email}
-          />
-          <CardMedia
-            className={classes.media}
-            image="https://via.placeholder.com/1240"
-            title="Some Photo"
-          />
+      <Card className={classes.card}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="recipe" className={classes.avatar}>
+              {this.getFirstLetter(this.props.commentData.name)}
+            </Avatar>
+          }
+          action={
+            <Fab aria-label="delete" className={classes.fab}>
+              <DeleteIcon />
+            </Fab>
+          }
+          title={this.props.commentData.name}
+          subheader={this.props.commentData.email}
+        />
+        <CardMedia
+          className={classes.media}
+          image="https://via.placeholder.com/1240"
+          title="Some Photo"
+        />
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {this.props.commentData.body}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: this.state.open
+            })}
+            onClick={this.handleExpandClick}
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+          <Typography>{this.state.stringOpen}</Typography>
+          <IconButton className={classes.favouriteIcon}>
+            <FavoriteIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={this.state.open}>
           <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {this.props.postData.body}
-            </Typography>
+            <CommentList commentData={this.props.comments} />
+            <CommentForm postNumber={this.props.commentData.id} />
           </CardContent>
-          <CardActions>
-            <IconButton
-              className={clsx(classes.expand, {
-                [classes.expandOpen]: this.state.open
-              })}
-              onClick={this.handleExpandClick}
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-            <Typography className={classes.toggleComments}>
-              {this.state.stringOpen}
-            </Typography>
-            <IconButton className={classes.favouriteIcon}>
-              <FavoriteIcon />
-            </IconButton>
-          </CardActions>
-          <Collapse in={this.state.open}>
-            <CardContent>
-              <CommentList commentData={this.state.comments} />
-              <CommentForm />
-            </CardContent>
-          </Collapse>
-        </Card>
-      </Provider>
+        </Collapse>
+      </Card>
     );
   }
 }
-
-export default withStyles(useStyles)(CardComponent);
+CardComponent.propTypes = {
+  fetchComments: PropTypes.func.isRequired,
+  comments: PropTypes.array.isRequired,
+  newComment: PropTypes.object
+};
+const mapStateToProps = state => ({
+  comments: state.comments.items,
+  newComment: state.comments.item
+});
+export default connect(
+  mapStateToProps,
+  { fetchComments }
+)(withStyles(useStyles)(CardComponent));

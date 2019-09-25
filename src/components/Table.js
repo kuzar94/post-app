@@ -1,5 +1,5 @@
 import CardComponent from "./CardComponent";
-import React, { Component } from "react";
+import React from "react";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withStyles } from "@material-ui/core/styles";
@@ -17,7 +17,7 @@ const useStyles = theme => ({
 });
 class Table extends React.Component {
   componentDidMount() {
-    fetch(`https://jsonplaceholder.typicode.com/comments?_start=0&_limit=5`)
+    fetch(`https://jsonplaceholder.typicode.com/comments?_start=0&_limit=2`)
       .then(res => res.json())
       .then(data => this.setState({ posts: data }));
   }
@@ -30,7 +30,7 @@ class Table extends React.Component {
     const postCards = Object.keys(this.state.posts).map(postNumber => {
       return (
         <li key={postNumber}>
-          <CardComponent postData={this.state.posts[postNumber]} />
+          <CardComponent commentData={this.state.posts[postNumber]} />
         </li>
       );
     });
