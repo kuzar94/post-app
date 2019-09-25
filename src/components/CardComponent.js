@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React from 'react';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
@@ -21,6 +22,8 @@ import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
 =======
+=======
+>>>>>>> parent of 17ac509... Added posting comments function
 import React, { Component } from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
@@ -104,6 +107,7 @@ class CardComponent extends React.Component {
     const { classes } = this.props;
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -173,6 +177,33 @@ class CardComponent extends React.Component {
               {this.props.postData.body}
             </Typography>
 >>>>>>> parent of 17ac509... Added posting comments function
+=======
+      <Provider store={store}>
+        <Card className={classes.card}>
+          <CardHeader
+            avatar={
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                {this.getFirstLetter(this.props.postData.name)}
+              </Avatar>
+            }
+            action={
+              <Fab aria-label="delete" className={classes.fab}>
+                <DeleteIcon />
+              </Fab>
+            }
+            title={this.props.postData.name}
+            subheader={this.props.postData.email}
+          />
+          <CardMedia
+            className={classes.media}
+            image="https://via.placeholder.com/1240"
+            title="Some Photo"
+          />
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {this.props.postData.body}
+            </Typography>
+>>>>>>> parent of 17ac509... Added posting comments function
           </CardContent>
           <CardActions>
             <IconButton
@@ -202,6 +233,7 @@ class CardComponent extends React.Component {
   }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 CardComponent.propTypes = {
   fetchComments: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
@@ -216,6 +248,10 @@ const mapStateToProps = (state, ownProps) => ({
   comments: getCommentsToPost(state, ownProps.postId)
 });
 export default connect(mapStateToProps)(withStyles(useStyles)(CardComponent));
+=======
+
+export default withStyles(useStyles)(CardComponent);
+>>>>>>> parent of 17ac509... Added posting comments function
 =======
 
 export default withStyles(useStyles)(CardComponent);

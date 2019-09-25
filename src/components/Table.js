@@ -49,6 +49,9 @@ class Table extends React.Component {
 =======
         <li key={postNumber}>
           <CardComponent postData={this.state.posts[postNumber]} />
+<<<<<<< HEAD
+>>>>>>> parent of 17ac509... Added posting comments function
+=======
 >>>>>>> parent of 17ac509... Added posting comments function
         </li>
       );
