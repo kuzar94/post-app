@@ -1,20 +1,20 @@
-import { FETCH_COMMENTS, NEW_COMMENT } from "../actions/types";
+import { FETCH_COMMENTS, FETCH_POSTS } from '../actions/types';
 const initialState = {
   items: [],
-  item: {}
+  item: {},
+  posts: []
 };
 export default function(state = initialState, action) {
-  console.log(action.payload);
   switch (action.type) {
     case FETCH_COMMENTS:
       return {
         ...state,
         items: action.payload
       };
-    case NEW_COMMENT:
+    case FETCH_POSTS:
       return {
         ...state,
-        item: action.payload
+        posts: action.payload
       };
     default:
       return state;
