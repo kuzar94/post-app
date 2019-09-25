@@ -1,4 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { fetchPosts } from "../actions/postActions";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -43,6 +45,9 @@ const useStyles = theme => ({
 });
 
 class CommentList extends React.Component {
+  componentWillMount() {
+    this.props.fetchPosts();
+  }
   getFirstLetter(stringData) {
     return stringData.charAt(0);
   }
@@ -70,55 +75,54 @@ class CommentList extends React.Component {
       fontSize: "15px"
     };
   }
-
   render() {
     const { classes } = this.props;
-    const commentsItems = Object.keys(this.props.commentData).map(
-      commentNumber => {
-        return (
-          <div key={commentNumber}>
-            <ListItem alignItems="center">
-              <ListItemAvatar>
-                <Avatar
-                  aria-label="recipe"
-                  style={this.getAvatarStyle(
-                    this.getFirstWord(
-                      this.props.commentData[commentNumber].name
-                    )
-                  )}
-                >
-                  {this.getFirstLetter(
-                    this.props.commentData[commentNumber].name
-                  )}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={this.props.commentData[commentNumber].name}
-                secondary={
-                  <React.Fragment>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className={classes.inline}
-                      color="textPrimary"
-                    >
-                      {this.props.commentData[commentNumber].email}
-                    </Typography>{" "}
-                    - {this.props.commentData[commentNumber].body}
-                  </React.Fragment>
-                }
-              />
-              <Fab aria-label="delete" className={classes.fab}>
-                <DeleteIcon />
-              </Fab>
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </div>
-        );
-      }
-    );
+    const commentsItems = Object.keys(this.props.posts).map(commentNumber => {
+      return (
+        <div key={commentNumber}>
+          <ListItem alignItems="center">
+            <ListItemAvatar>
+              <Avatar
+                aria-label="recipe"
+                style={this.getAvatarStyle(
+                  this.getFirstWord(this.props.posts[commentNumber].name)
+                )}
+              >
+                {this.getFirstLetter(this.props.posts[commentNumber].name)}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={this.props.posts[commentNumber].name}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    className={classes.inline}
+                    color="textPrimary"
+                  >
+                    {this.props.posts[commentNumber].email}
+                  </Typography>
+                  - {this.props.posts[commentNumber].body}
+                </React.Fragment>
+              }
+            />
+            <Fab aria-label="delete" className={classes.fab}>
+              <DeleteIcon />
+            </Fab>
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </div>
+      );
+    });
 
     return <List className={classes.root}>{commentsItems}</List>;
   }
 }
-export default withStyles(useStyles)(CommentList);
+const mapStateToProps = state => ({
+  posts: state.posts.items
+});
+export default connect(
+  mapStateToProps,
+  { fetchPosts }
+)(withStyles(useStyles)(CommentList));

@@ -1,13 +1,10 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { createComment } from "../actions/commentActions";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import DoneIcon from "@material-ui/icons/Done";
 
-class CommentForm extends Component {
+export default class CommentForm extends Component {
   componentStyles = {
     container: {
       display: "flex",
@@ -39,14 +36,20 @@ class CommentForm extends Component {
     e.preventDefault();
     const comment = {
       name: this.state.name,
-      email: this.state.title,
-      body: this.state.comment,
-      postId: this.props.postNumber
+      title: this.state.title,
+      comment: this.state.comment
     };
-    this.props.createComment(comment, this.props.postNumber);
+    fetch("https://jsonplaceholder.typicode.com/comments", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(comment)
+    })
+      .then(res => res.json())
+      .then(data => console.log(data));
   };
   render() {
-    console.log(this.props.postNumber);
     return (
       <div>
         <Typography style={this.componentStyles.typography}>
@@ -83,6 +86,7 @@ class CommentForm extends Component {
             label="Comment"
             placeholder="Type your comment"
             variant="outlined"
+            style={this.componentStyles.textField}
             style={{ margin: 5 }}
             fullWidth
             value={this.state.comment}
@@ -101,10 +105,3 @@ class CommentForm extends Component {
     );
   }
 }
-CommentForm.propTypes = {
-  createComment: PropTypes.func.isRequired
-};
-export default connect(
-  null,
-  { createComment }
-)(CommentForm);

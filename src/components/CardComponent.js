@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
@@ -19,6 +20,28 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
+=======
+import React, { Component } from "react";
+import CommentForm from "./CommentForm";
+import CommentList from "./CommentList";
+import { Provider } from "react-redux";
+import store from "../store";
+import clsx from "clsx";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Collapse from "@material-ui/core/Collapse";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Fab from "@material-ui/core/Fab";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { withStyles } from "@material-ui/core/styles";
+>>>>>>> parent of 17ac509... Added posting comments function
 
 const useStyles = (theme) => ({
   card: {
@@ -80,6 +103,7 @@ class CardComponent extends React.Component {
   render() {
     const { classes } = this.props;
     return (
+<<<<<<< HEAD
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -122,12 +146,62 @@ class CardComponent extends React.Component {
           <CardContent>
             {/* <CommentList commentData={this.props.comments} /> */}
             {/* <CommentForm /> */}
+=======
+      <Provider store={store}>
+        <Card className={classes.card}>
+          <CardHeader
+            avatar={
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                {this.getFirstLetter(this.props.postData.name)}
+              </Avatar>
+            }
+            action={
+              <Fab aria-label="delete" className={classes.fab}>
+                <DeleteIcon />
+              </Fab>
+            }
+            title={this.props.postData.name}
+            subheader={this.props.postData.email}
+          />
+          <CardMedia
+            className={classes.media}
+            image="https://via.placeholder.com/1240"
+            title="Some Photo"
+          />
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {this.props.postData.body}
+            </Typography>
+>>>>>>> parent of 17ac509... Added posting comments function
           </CardContent>
-        </Collapse>
-      </Card>
+          <CardActions>
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: this.state.open
+              })}
+              onClick={this.handleExpandClick}
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+            <Typography className={classes.toggleComments}>
+              {this.state.stringOpen}
+            </Typography>
+            <IconButton className={classes.favouriteIcon}>
+              <FavoriteIcon />
+            </IconButton>
+          </CardActions>
+          <Collapse in={this.state.open}>
+            <CardContent>
+              <CommentList commentData={this.state.comments} />
+              <CommentForm />
+            </CardContent>
+          </Collapse>
+        </Card>
+      </Provider>
     );
   }
 }
+<<<<<<< HEAD
 CardComponent.propTypes = {
   fetchComments: PropTypes.func.isRequired,
   comments: PropTypes.array.isRequired,
@@ -142,3 +216,7 @@ const mapStateToProps = (state, ownProps) => ({
   comments: getCommentsToPost(state, ownProps.postId)
 });
 export default connect(mapStateToProps)(withStyles(useStyles)(CardComponent));
+=======
+
+export default withStyles(useStyles)(CardComponent);
+>>>>>>> parent of 17ac509... Added posting comments function
