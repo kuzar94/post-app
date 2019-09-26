@@ -74,20 +74,8 @@ class Table extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchPosts: dispatch(actions.fetchPosts()),
-    fetchComments: dispatch(actions.fetchComments())
-  };
-};
+const mapStateToProps = (state) => ({
+  posts: state.comments.posts
+});
 
-const enhance = connect(
-  (state) => {
-    return {
-      posts: state.comments.posts
-    };
-  },
-  mapDispatchToProps
-)(withStyles(useStyles)(Table));
-
-export default enhance;
+export default connect(mapStateToProps)(withStyles(useStyles)(Table));
