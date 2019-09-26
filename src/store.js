@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { fetchPosts, fetchComments } from './actions/commentActions';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 const initialState = {};
@@ -11,4 +12,8 @@ const store = createStore(
   initialState,
   composeEnhancers(applyMiddleware(...middleware))
 );
+
+store.dispatch(fetchPosts());
+store.dispatch(fetchComments());
+
 export default store;
